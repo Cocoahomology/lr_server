@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'price_app.apps.PriceAppConfig',
+    "graphene_django",
 ]
 
 MIDDLEWARE = [
