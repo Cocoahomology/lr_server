@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True)
-def update_cryptocurrency_prices(self):
+def update_cryptocurrency_prices(self, use_token_name_mapping: bool = True):
     # TODO: Add retry logic for failed requests
     # TODO: Consider better error handling
     # TODO: Ensure the insertion is being done atomically (need to double-check Django ORM behavior)
@@ -29,8 +29,13 @@ def update_cryptocurrency_prices(self):
         return
 
     for token, token_data in token_data_dict.items():
+        token_name = (
+            config.TOKEN_NAME_MAPPING.get(token) if use_token_name_mapping else token
+        )
+        if not token_name:
+            logger.error(f"No name provided for token: {token} in TOKEN_NAME_MAPPING")
+            continue
         try:
-            token_name = config.TOKEN_NAME_MAPPING.get(token)
             token_symbol = token_data["symbol"]
             token_price = token_data["price"]
             token_last_updated = datetime.fromtimestamp(
