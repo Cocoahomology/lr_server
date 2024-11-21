@@ -23,11 +23,14 @@ def get_cryptocurrency_prices_from_defillama(
     try:
         url = f"https://coins.llama.fi/prices/current/{token_addresses_string}"
         response = requests.get(url)
-        response.raise_for_status()
+        if response.status_code != 200:
+            raise requests.exceptions.RequestException(
+                f"Unexpected response code: {response.status_code}"
+            )
         data = response.json()
         cache.set(cache_key, data, timeout=cache_time)
         return data
-    except requests.exceptions.RequestException as e:
+    except (requests.exceptions.RequestException, ValueError) as e:
         logger.error(
             f"Failed to retrieve cryptocurrency prices from DefiLlama 'coins' endpoint: {e}"
         )
