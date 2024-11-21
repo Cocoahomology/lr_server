@@ -7,22 +7,33 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CryptoCurrency',
+            name="CryptoCurrency",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('symbol', models.CharField(max_length=10)),
-                ('price', models.DecimalField(decimal_places=8, max_digits=24)),
-                ('last_updated', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("symbol", models.CharField(max_length=10)),
+                ("price", models.DecimalField(decimal_places=8, max_digits=24)),
+                ("last_updated", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'constraints': [models.CheckConstraint(condition=models.Q(('price__gte', 0)), name='price_gte_0')],
-                'unique_together': {('name', 'symbol')},
+                "constraints": [
+                    models.CheckConstraint(
+                        condition=models.Q(("price__gte", 0)), name="price_gte_0"
+                    )
+                ],
+                "unique_together": {("name", "symbol")},
             },
         ),
     ]
