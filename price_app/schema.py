@@ -1,5 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
+from datetime import datetime
+from decimal import Decimal
 
 from .models import CryptoCurrency
 
@@ -14,14 +16,34 @@ class Query(graphene.ObjectType):
     cryptocurrencys = graphene.List(CryptoCurrencyType)
 
     def resolve_cryptocurrencys(self, info):
-        """
-        The resolve_posts function is a resolver. It’s responsible for retrieving the posts from the database and returning them to GraphQL.
-
-        :param self: Refer to the current instance of a class
-        :param info: Pass along the context of the query
-        :return: All post objects from the database
-        """
         return CryptoCurrency.objects.all()
 
 
-schema = graphene.Schema(query=Query)
+# TODO: Mutation accepts a last_updated field.  If it is not provided, it defaults to the current time.
+# Check that this meets the specifications.
+# TODO: Mutation truncates the price to 8 decimal places.  Check that this meets the specifications.
+class CreateCryptoCurrency(graphene.Mutation):
+    class Arguments:
+        name = graphene.String(required=True)
+        symbol = graphene.String(required=True)
+        price = graphene.Float(required=True)
+        last_updated = graphene.DateTime(required=False)
+
+    cryptocurrency = graphene.Field(CryptoCurrencyType)
+
+    def mutate(self, info, name, symbol, price, last_updated=None):
+        if last_updated is None:
+            last_updated = datetime.now()
+        truncated_price = Decimal(price).quantize(Decimal("1.00000000"))
+        cryptocurrency = CryptoCurrency(
+            name=name, symbol=symbol, price=truncated_price, last_updated=last_updated
+        )
+        cryptocurrency.save()
+        return CreateCryptoCurrency(cryptocurrency=cryptocurrency)
+
+
+class Mutation(graphene.ObjectType):
+    create_cryptocurrency = CreateCryptoCurrency.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

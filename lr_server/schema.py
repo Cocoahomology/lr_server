@@ -8,4 +8,9 @@ class Query(price_app.schema.Query, graphene.ObjectType):
     pass
 
 
-schema = graphene.Schema(query=Query)
+class Mutation(price_app.schema.Mutation, graphene.ObjectType):
+    # Combine the mutations from different apps
+    pass
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
