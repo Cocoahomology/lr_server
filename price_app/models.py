@@ -11,7 +11,7 @@ class CryptoCurrency(models.Model):
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=10)
     price = models.DecimalField(max_digits=24, decimal_places=8)
-    last_updated = models.DateTimeField(auto_now=True)
+    last_updated = models.DateTimeField()
 
     def __str__(self):
         return f"{self.name} ({self.symbol})"
