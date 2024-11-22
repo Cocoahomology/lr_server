@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,13 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# TODO: Move to environment variables for production.
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-jtfdt3weti+_#l3c_!d+q$8ifc9dt0g&kc!isymp_!p_*$+hd)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# TODO: Update to only allow specific hosts in production.
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -45,11 +49,11 @@ INSTALLED_APPS = [
 
 # CELERY SETTINGS
 
-CELERY_BROKER_URL = "redis://127.0.0.1:6379"
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_BACKEND = "django-db"
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND", "redis://redis:6379/0")
 
 # CELERY BEAT SCHEDULER
 
@@ -102,7 +106,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://127.0.0.1:6379/1",
+        "LOCATION": f"redis://redis:6379/1",  # Connect to Redis container
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -153,8 +157,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # LOGGING
 # TODO: Update to add logging for production, currently only logs to console.
-
-import os
 
 LOGGING = {
     "version": 1,
