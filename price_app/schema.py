@@ -1,9 +1,8 @@
 import graphene
+from .models import CryptoCurrency
 from graphene_django import DjangoObjectType
 from datetime import datetime
-from decimal import Decimal
-
-from .models import CryptoCurrency
+from .utils import convert_price_from_float_to_decimal
 
 
 class CryptoCurrencyType(DjangoObjectType):
@@ -34,7 +33,7 @@ class CreateCryptoCurrency(graphene.Mutation):
     def mutate(self, info, name, symbol, price, last_updated=None):
         if last_updated is None:
             last_updated = datetime.now()
-        truncated_price = Decimal(price).quantize(Decimal("1.00000000"))
+        truncated_price = convert_price_from_float_to_decimal(price)
         cryptocurrency = CryptoCurrency(
             name=name, symbol=symbol, price=truncated_price, last_updated=last_updated
         )

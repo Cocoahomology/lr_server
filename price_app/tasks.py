@@ -3,6 +3,7 @@ from celery import shared_task
 from .services.defillama_request_service import defillama_request_service
 from . import config
 from datetime import datetime, timezone
+from .utils import convert_price_from_float_to_decimal
 import logging
 
 logger = logging.getLogger(__name__)
@@ -36,10 +37,10 @@ def update_cryptocurrency_prices(self, use_token_name_mapping: bool = True):
             logger.error(f"No name provided for token: {token} in TOKEN_NAME_MAPPING")
             continue
         try:
-            token_symbol = token_data["symbol"]
-            token_price = token_data["price"]
+            token_symbol = token_data.get("symbol")
+            token_price = convert_price_from_float_to_decimal(token_data.get("price"))
             token_last_updated = datetime.fromtimestamp(
-                timestamp=int(token_data["timestamp"]),
+                timestamp=int(token_data.get("timestamp")),
                 tz=timezone.utc,
             )
         except KeyError as e:
