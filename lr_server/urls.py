@@ -21,6 +21,7 @@ from django.urls.conf import include
 from graphene_django.views import GraphQLView
 from .schema import schema
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
@@ -29,8 +30,10 @@ def home(request):
     )
 
 
+# XXX graphql/ path is currently vulnerable to CSRF attacks. This is a security risk.
+# XXX This is only set for local development.
 urlpatterns = [
     path("", home, name="home"),
     path("admin/", admin.site.urls),
-    path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),
+    path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
 ]
