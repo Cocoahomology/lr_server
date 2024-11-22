@@ -13,6 +13,7 @@ app.conf.enable_utc = True
 app.config_from_object(settings, namespace="CELERY")
 
 # Celery Beat Settings
+# TODO: Move cron schedule to config file.
 
 app.conf.beat_schedule = {
     "update-prices-task": {
