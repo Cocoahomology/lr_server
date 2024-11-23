@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "django_celery_results",
     "django_celery_beat",
     "corsheaders",
-    "django_extensions",
 ]
 
 # CELERY SETTINGS
@@ -187,7 +186,3 @@ LOGGING = {
         },
     },
 }
-
-SECURE_SSL_REDIRECT = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True

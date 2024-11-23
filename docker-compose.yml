@@ -9,7 +9,6 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-      - "443:8000" # Expose HTTPS port
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0

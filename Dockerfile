@@ -11,9 +11,6 @@ WORKDIR /app
 # Copy the application code
 COPY . /app/
 
-# Copy SSL certificates
-COPY certs /app/certs
-
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     libpq-dev \
