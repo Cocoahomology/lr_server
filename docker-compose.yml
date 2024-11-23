@@ -1,10 +1,10 @@
-version: '3.8'
+version: "3.8"
 
 services:
   django:
     build: .
     container_name: "django_lr_server"
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
     volumes:
       - .:/app
     ports:
@@ -12,6 +12,9 @@ services:
     environment:
       - CELERY_BROKER=redis://redis:6379/0
       - CELERY_BACKEND=redis://redis:6379/0
+      - DJANGO_SUPERUSER_USERNAME=admin # TODO: REMOVE
+      - DJANGO_SUPERUSER_PASSWORD=admin # TODO: REMOVE
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
     depends_on:
       - redis
 
@@ -22,7 +25,15 @@ services:
 
   celery:
     build: .
-    command: celery -A lr_server worker --loglevel=info
+    command:
+      [
+        "/app/entrypoint.sh",
+        "celery",
+        "-A",
+        "lr_server",
+        "worker",
+        "--loglevel=info",
+      ]
     volumes:
       - .:/app
     environment:
@@ -34,7 +45,15 @@ services:
 
   celery-beat:
     build: .
-    command: celery -A lr_server beat --loglevel=info
+    command:
+      [
+        "/app/entrypoint.sh",
+        "celery",
+        "-A",
+        "lr_server",
+        "beat",
+        "--loglevel=info",
+      ]
     volumes:
       - .:/app
     environment:
