@@ -25,7 +25,7 @@ services:
 
   celery:
     build: .
-    command: "celery -A lr_server worker --loglevel=info"
+    entrypoint: ["celery", "-A", "lr_server", "worker", "--loglevel=info"]
     volumes:
       - .:/app
     environment:
@@ -37,7 +37,7 @@ services:
 
   celery-beat:
     build: .
-    command: "celery -A lr_server beat --loglevel=info"
+    entrypoint: ["celery", "-A", "lr_server", "beat", "--loglevel=info"]
     volumes:
       - .:/app
     environment:
