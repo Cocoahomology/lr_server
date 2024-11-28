@@ -63,7 +63,6 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -74,10 +73,13 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
-# XXX CORS_ALLOWED_ORIGINS is currently only set for local development.
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# # CORS_ALLOWED_ORIGINS is set for local development.
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
+
+# XXX CORS_ALLOW_ALL_ORIGINS is a security risk and only for testing purposes.
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "lr_server.urls"
 
